@@ -28,8 +28,13 @@ const Home = () => {
 
   // Add Income/Profit
   const addIncome = async () => {
-    if (!incomeAmount || parseFloat(incomeAmount) <= 0) {
+    if (
+      !incomeAmount ||
+      parseFloat(incomeAmount) <= 0 ||
+      !/^\d+(\.\d+)?$/.test(incomeAmount)
+    ) {
       showError("Please enter a valid income amount");
+      setIncomeAmount("");
       return;
     }
 
@@ -44,14 +49,18 @@ const Home = () => {
     await updateBalance(userId, amount);
     setBalance((prev) => prev + amount);
     setIncomeAmount("");
-
     showSuccess(`Income of ₹${amount.toFixed(2)} added successfully!`);
   };
 
   // Add Expense
   const addExpense = async () => {
-    if (!expenseAmount || parseFloat(expenseAmount) <= 0) {
+    if (
+      !expenseAmount ||
+      parseFloat(expenseAmount) < 0 ||
+      !/^\d+(\.\d+)?$/.test(expenseAmount)
+    ) {
       showError("Please enter a valid expense amount");
+      setExpenseAmount("");
       return;
     }
 
