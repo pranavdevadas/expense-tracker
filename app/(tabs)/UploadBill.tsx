@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import UploadOptionsModal from "../../components/UploadOptionsModal";
 import BillPreview from "../../components/BillPreview";
-import { getUserById, updateBalance } from "@/firebase/userService";
+import { getUserById, updateBalance } from "@/services/userService";
 import { extractBillTotal } from "@/services/ocrService";
 import { auth } from "@/firebase/firebaseConfig";
 

@@ -1,5 +1,5 @@
 import { doc, setDoc, getDoc, updateDoc, increment, onSnapshot } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { db } from "../firebase/firebaseConfig";
 
 interface AppUser {
   uid: string;

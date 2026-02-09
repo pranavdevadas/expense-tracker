@@ -14,7 +14,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import LogoutModal from "@/components/LogoutModal";
-import { getUserById, updateBalance } from "@/firebase/userService";
+import { getUserById, updateBalance } from "@/services/userService";
 import { auth } from "@/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useFocusEffect } from "expo-router";

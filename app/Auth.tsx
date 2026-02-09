@@ -16,8 +16,8 @@ import {
   FontAwesome,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { login, register } from "@/firebase/authService";
-import { createUser } from "@/firebase/userService";
+import { login, register } from "@/services/authService";
+import { createUser } from "@/services/userService";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
