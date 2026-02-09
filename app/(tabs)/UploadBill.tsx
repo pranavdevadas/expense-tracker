@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import UploadOptionsModal from "../../components/UploadOptionsModal";
@@ -7,6 +7,7 @@ import BillPreview from "../../components/BillPreview";
 import { getUserById, updateBalance } from "@/services/userService";
 import { extractBillTotal } from "@/services/ocrService";
 import { auth } from "@/firebase/firebaseConfig";
+import { showError, showSuccess } from "@/components/Toast";
 
 const UploadBill = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -31,10 +32,9 @@ const UploadBill = () => {
       }
 
       setTotalAmount(total);
-      Alert.alert("Success", "Bill processed successfully!");
+      showSuccess("Bill processed successfully!");
     } catch (error) {
-      Alert.alert(
-        "Processing Failed",
+      showError(
         "Could not extract total amount from the bill. Please try again.",
       );
       console.error(error);
@@ -45,13 +45,13 @@ const UploadBill = () => {
 
   const submitExpense = async () => {
     if (totalAmount <= 0) {
-      Alert.alert("Error", "No valid amount found in the bill");
+      showError("No valid amount found in the bill");
       return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert("Error", "User not authenticated");
+      showError("User not authenticated");
       return;
     }
 
@@ -59,33 +59,23 @@ const UploadBill = () => {
       const userData = await getUserById(user.uid);
 
       if (!userData) {
-        Alert.alert("Error", "User data not found");
+        showError("User data not found");
         return;
       }
 
       if (totalAmount > userData.balance) {
-        Alert.alert("Error", "Insufficient balance for this expense");
+        showError("Insufficient balance for this expense");
         return;
       }
 
       await updateBalance(user.uid, -totalAmount);
 
-      Alert.alert(
-        "Expense Submitted",
-        `₹${totalAmount.toFixed(2)} deducted from your balance`,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              setImage(null);
-              setTotalAmount(0);
-            },
-          },
-        ],
-      );
+      showSuccess(`₹${totalAmount.toFixed(2)} deducted from your balance`);
+      setImage(null);
+      setTotalAmount(0);
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Failed to submit expense");
+      console.error("Error submitting expense:", error);
+      showError("Failed to submit expense. Try again");
     }
   };
 

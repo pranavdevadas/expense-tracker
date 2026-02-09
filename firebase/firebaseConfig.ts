@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
+import { showError, showSuccess } from "@/components/Toast";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -26,13 +26,10 @@ export const auth = initializeAuth(app, {
 export const logout = async () => {
   try {
     await signOut(auth);
-    Alert.alert("Logged Out", "You have been logged out successfully.");
+    showSuccess("You have been logged out successfully.");
   } catch (error) {
     console.error("Error signing out:", error);
-    Alert.alert(
-      "Error",
-      "An error occurred while signing out. Please try again.",
-    );
+    showError("An error occurred while signing out. Please try again.");
   }
 };
 

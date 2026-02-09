@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -18,6 +17,7 @@ import { getUserById, updateBalance } from "@/services/userService";
 import { auth } from "@/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useFocusEffect } from "expo-router";
+import { showError, showSuccess } from "@/components/Toast";
 
 const Home = () => {
   const [balance, setBalance] = useState<number>(1000.0);
@@ -29,12 +29,12 @@ const Home = () => {
   // Add Income/Profit
   const addIncome = async () => {
     if (!incomeAmount || parseFloat(incomeAmount) <= 0) {
-      Alert.alert("Error", "Please enter a valid income amount");
+      showError("Please enter a valid income amount");
       return;
     }
 
     if (!userId) {
-      Alert.alert("Error", "User not authenticated");
+      showError("User not authenticated");
       return;
     }
 
@@ -45,38 +45,32 @@ const Home = () => {
     setBalance((prev) => prev + amount);
     setIncomeAmount("");
 
-    Alert.alert(
-      "Success",
-      `Income of ₹${amount.toFixed(2)} added successfully!`,
-    );
+    showSuccess(`Income of ₹${amount.toFixed(2)} added successfully!`);
   };
 
   // Add Expense
   const addExpense = async () => {
     if (!expenseAmount || parseFloat(expenseAmount) <= 0) {
-      Alert.alert("Error", "Please enter a valid expense amount");
+      showError("Please enter a valid expense amount");
       return;
     }
 
     if (!userId) {
-      Alert.alert("Error", "User not authenticated");
+      showError("User not authenticated");
       return;
     }
 
     const amount = parseFloat(expenseAmount);
 
     if (amount > balance) {
-      Alert.alert("Error", "Insufficient balance for this expense");
+      showError("Insufficient balance for this expense");
       return;
     }
     await updateBalance(userId, -amount);
     setBalance((prev) => prev - amount);
     setExpenseAmount("");
 
-    Alert.alert(
-      "Expense Added",
-      `Expense of ₹${amount.toFixed(2)} added successfully!`,
-    );
+    showSuccess(`Expense of ₹${amount.toFixed(2)} added successfully!`);
   };
 
   useEffect(() => {
@@ -90,26 +84,26 @@ const Home = () => {
   }, []);
 
   useFocusEffect(
-  useCallback(() => {
-    const user = auth.currentUser;
-    if (!user) return;
+    useCallback(() => {
+      const user = auth.currentUser;
+      if (!user) return;
 
-    let isActive = true;
+      let isActive = true;
 
-    const fetchBalance = async () => {
-      const data = await getUserById(user.uid);
-      if (data && isActive) {
-        setBalance(data.balance);
-      }
-    };
+      const fetchBalance = async () => {
+        const data = await getUserById(user.uid);
+        if (data && isActive) {
+          setBalance(data.balance);
+        }
+      };
 
-    fetchBalance();
+      fetchBalance();
 
-    return () => {
-      isActive = false;
-    };
-  }, []),
-);
+      return () => {
+        isActive = false;
+      };
+    }, []),
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -129,7 +123,9 @@ const Home = () => {
 
         <View className="px-6 mb-10">
           <View className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 shadow-lg">
-            <Text className="text-lg mb-2 text-start ml-2">Available Balance</Text>
+            <Text className="text-lg mb-2 text-start ml-2">
+              Available Balance
+            </Text>
             <Text className="text-5xl font-bold text-start ml-2">
               ₹{balance.toFixed(2)}
             </Text>

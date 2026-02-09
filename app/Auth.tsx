@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -21,6 +20,7 @@ import {
 import { login, register } from "@/services/authService";
 import { createUser } from "@/services/userService";
 import { getAuthErrorMessage } from "@/utils/authErrors";
+import { showSuccess, showError } from "@/components/Toast";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -45,10 +45,10 @@ const Auth = () => {
       // LOGIN
       try {
         await login(formData.email, formData.password);
-        Alert.alert("Success", "Login successful!");
+        showSuccess("Login successful!");
         router.replace("/(tabs)/Home");
       } catch (error: any) {
-        Alert.alert("Login Error", getAuthErrorMessage(error));
+        showError(getAuthErrorMessage(error));
       }
     } else {
       // REGISTER
@@ -58,20 +58,19 @@ const Auth = () => {
         !formData.password ||
         !formData.confirmPassword
       ) {
-        Alert.alert("Error", "Please fill in all required fields");
+        showError("Please fill in all required fields");
         return;
       }
 
       if (!/^[A-Za-z]{3,}$/.test(formData.name)) {
-        Alert.alert(
-          "Invalid Name",
-          "Name must contain only letters and be at least 3 characters long.",
+        showError(
+          "Name must contain only letters and be at least 3 characters long",
         );
         return;
       }
 
       if (formData.password !== formData.confirmPassword) {
-        Alert.alert("Error", "Passwords do not match");
+        showError("Passwords do not match");
         return;
       }
 
@@ -86,10 +85,10 @@ const Auth = () => {
           createdAt: new Date(),
         });
 
-        Alert.alert("Success", "Registration successful!");
+        showSuccess("Registration successful!");
         setIsLogin(true);
       } catch (error: any) {
-        Alert.alert("Registration Error", getAuthErrorMessage(error));
+        showError(getAuthErrorMessage(error));
       }
     }
   };

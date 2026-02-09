@@ -1,10 +1,11 @@
-import { Modal, View, Text, TouchableOpacity, Alert } from "react-native";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
 import {
   Feather,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { showError } from "@/components/Toast";
 
 interface UploadOptionsModalProps {
   visible: boolean;
@@ -24,10 +25,7 @@ const UploadOptionsModal: React.FC<UploadOptionsModalProps> = ({
     ]);
 
     if (!cameraPermission.granted || !mediaLibraryPermission.granted) {
-      Alert.alert(
-        "Permissions Required",
-        "Please grant camera and gallery permissions to upload bills",
-      );
+      showError("Please grant camera and gallery permissions to upload bills");
       return false;
     }
     return true;
@@ -61,8 +59,7 @@ const UploadOptionsModal: React.FC<UploadOptionsModalProps> = ({
         onImageSelected(result.assets[0].uri);
       }
     } catch (error) {
-      Alert.alert(
-        "Error",
+      showError(
         `Failed to ${source === "camera" ? "take photo" : "select image"}`,
       );
       console.error(error);
