@@ -1,0 +1,9 @@
+// metro.config.cjs
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
+
+/** @type {import('expo/metro-config').MetroConfig} */
+/* eslint-disable no-undef */
+const config = getDefaultConfig(__dirname);
+
+module.exports = withNativeWind(config, { input: "./app/globals.css" });
